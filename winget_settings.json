@@ -1,1 +1,35 @@
+{
+    "$schema": "https://aka.ms/winget-settings.schema.json",
 
+    // For documentation on these settings, see: https://aka.ms/winget-settings
+    // "source": {
+    //    "autoUpdateIntervalInMinutes": 5
+    // },
+    "visual": {
+        // Color of the progress bar that WinGet displays when not specified by arguments.
+        // - accent (default)
+        // - retro
+        // - rainbow
+        //"progressBar": "rainbow"
+    },
+    "experimentalFeatures": {
+        "experimentalCmd": false,
+        "experimentalArg": false,
+        // Microsoft Store App support in WinGet is currently implemented as an experimental feature.
+        // It supports a curated list of utility apps from Microsoft Store. You can enable the feature as shown below.
+        "experimentalMSStore": false,
+        // While work is in progress on list, the command is hidden behind a feature toggle.
+        "list": true,
+        // While work is in progress on upgrade, the command is hidden behind a feature toggle.
+        "upgrade": true,
+        // While work is in progress on uninstall, the command is hidden behind a feature toggle.
+        "uninstall": true,
+        // While work is in progress for import, the command is hidden behind a feature toggle.
+        "import": true,
+        // While work is in progress for export, the command is hidden behind a feature toggle.
+        "export": true,
+        // While work is in progress for rest source support, the feature is hidden behind a feature toggle.
+        // Enabling this will not change how client works currently and will allow testing any additional rest sources added.
+        "restSource": false
+    }
+}
