@@ -1,2 +1,3 @@
-# MyUserProfiles
-M
+# MyUserProfiles - Meine Profile
+
+Unter anderem für meine experimentellen winget settings, meine PowerShell Profile (POSH + PWSH)...
