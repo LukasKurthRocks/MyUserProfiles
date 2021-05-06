@@ -1,21 +1,58 @@
 #
-#  Syncable PSProfile
+#  THIS IS MY PROFILE. THIS MIGHT BREAK YOURS!
 #
+# Inspired by: Optimizing Profile: https://devblogs.microsoft.com/powershell/optimizing-your-profile/
+# TODO: Cleaning up this profile.
 
-# TODO: Optimizing Profile: https://devblogs.microsoft.com/powershell/optimizing-your-profile/
-# Cleaning up this profile.
-
-return
-if ($PSVersionTable.PSVersion.Major -lt 3) {
+# Testing older versions: Skipping profile script.
+if ($PSVersionTable.PSVersion.Major -lt 5) {
     return
 }
+
+#region Syncable PS Profile
+$GitHub_PSProfileFile = "https://raw.githubusercontent.com/LukasKurthRocks/MyUserProfiles/main/Profiles/ps_profile.ps1"
+$GitHub_PSVersionsFile = "https://raw.githubusercontent.com/LukasKurthRocks/MyUserProfiles/main/VersionCheck/versions.json"
+$PSProfileFileVersion = [Version](Invoke-RestMethod -Uri $GitHub_PSVersionsFile).PowerShell
+$VersionFileLocal = [System.IO.Path]::Combine("$HOME", '.latest_profile_versions')
+
+$PSLocalFileVersion = [Version]"0.0.0"
+if (Test-Path -Path "$VersionFileLocal" -ErrorAction SilentlyContinue) {
+    $PSLocalFileVersion = (Get-Content -Path "$VersionFileLocal" | ConvertFrom-Json).PowerShell
+}
+
+# Test Version - Mismatch
+if ($PSLocalFileVersion -ne $PSProfileFileVersion) {
+    Write-Verbose "Your version: $PSLocalFileVersion" -Verbose
+    Write-Verbose "New version: $PSProfileFileVersion" -Verbose
+    $choice = Read-Host -Prompt "Found newer profile, install? (Y)"
+    if ($choice.ToLower() -eq "y" -or $choice -eq "") {
+        try {
+            $GitHub_FileContent = Invoke-RestMethod $GitHub_PSProfileFile -ErrorAction Stop
+            Set-Content -Path $profile -Value $GitHub_FileContent
+            Set-Content -Path "$VersionFileLocal" -Value ( Invoke-RestMethod -Uri $GitHub_PSVersionsFile | ConvertTo-Json ) # save versions to file
+            Write-Verbose "Installed newer version of profile" -Verbose
+            . $profile
+            return
+        }
+        catch {
+            # we can hit rate limit issue with GitHub since we're using anonymous
+            Write-Verbose -Verbose "Was not able to access gist, try again next time"
+        }
+    }
+}
+#endregion
 
 #region Configuration
 # Set Default Parameters
 $PSDefaultParameterValues['Get-Help:ShowWindow'] = $true
-$PSDefaultParameterValues['Send-MailMessage:From'] = "kurth@$env:COMPUTERNAME.lokal"
+$PSDefaultParameterValues['Send-MailMessage:From'] = "$env:USERNAME@$env:COMPUTERNAME.lokal"
 $VerboseProfile = $false
+$IsPartOfDomain = (Get-CimInstance -ClassName  Win32_ComputerSystem).PartOfDomain
 #endregion
+
+# Save default functions for comparison
+$SystemFunction = Get-ChildItem function:
+$SystemAliasses = Get-Alias
 
 #region Profile Functions
 function Get-PowerShellTerminalType {
@@ -109,9 +146,6 @@ if ($psISE -or (Get-PowerShellTerminalType).content -eq "Windows PowerShell ISE"
 }
 # ServerRemoteHost | RemoteHost => Sowohl Admin Center, als auch Enter-PSSession
 
-$SystemFunction = Get-ChildItem function:
-$SystemAliasses = Get-Alias
-
 # Import Functions
 if (Test-Path -Path "$PSScriptRoot\profile_scripts" -ErrorAction SilentlyContinue) {
     $Host.UI.RawUI.WindowTitle = "PROFILE: Loading scripts folder"
@@ -151,15 +185,15 @@ if (!$env:WT_Session) {
         else {
             $Admin = " (No Admin)"
         }
-
-        #$host.UI.RawUI.WindowTitle = "PowerShell -- $curUser @ $curComp "
+        
         $host.UI.RawUI.WindowTitle = "$([net.dns]::GetHostName()) $([string]::Join(".", ("$((Get-Host).Version)".Split(".")[0,1])))$Admin $(Get-Location)"
-        #Write-VcsStatus
         return " "
     }
     
-    # Bei mir ist die Farbe der Argumente falsch.
-    Set-PSReadLineOption -Colors @{ Parameter = 'Gray' }
+    if ($IsPartOfDomain) {
+        # Bei mir ist die Farbe der Argumente falsch.
+        Set-PSReadLineOption -Colors @{ Parameter = 'Gray' }
+    }
 }
 # Delugia.Nerd.Font.Complete.ttf + Delugia.Nerd.Font.ttf
 # Install-Module posh-git -Scope CurrentUser
@@ -168,7 +202,7 @@ if (!$env:WT_Session) {
 # So sieht man anhand von "$ThemeSettings.PromptSymbols.ElevatedSymbol", dass es im Admin laeuft oder nicht.
 else {
     if (IsConsoleRunningElevated) {
-        # Versteckt den Namen, wenn Standard
+        # Versteckt den Namen in OhMyPosh, wenn "Default"
         $DefaultUser = "Kurth"
     }
     if (get-module posh-git) {
@@ -242,18 +276,12 @@ if ((Get-PowerShellTerminalType).content -eq "Visual Studio Code") {
     #Clear-Host
 }
 else {
-    if (Get-Command -Name "winfetch" -ErrorAction SilentlyContinue) {
-        #winfetch
-    }
-    
     # Wetter Informationen anzeigen beim Starten des Profiles...
     #Get-Weather -Verbose:$VerboseProfile
 
     $Error.Clear()
 }
 
-# TODO: Shortcuts.ps1
-#function imf($name) { Import-Module $name -force }
-#Set-Alias np $env:SystemRoot\notepad.exe
-#Set-Alias npp $env:ProgramFiles\Notepad++\notepad++.exe
-#Set-Alias edit $env:ProgramFiles\Notepad++\notepad++.exe
+# MORE INFORMATION:
+# - ShortCuts in ProfileScripts folder
+# - WinFetch function in ProfileScripts folder
