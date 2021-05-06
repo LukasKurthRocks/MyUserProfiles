@@ -11,8 +11,6 @@ if (Test-Path -Path "$VersionFileLocal" -ErrorAction SilentlyContinue) {
     $PSLocalFileVersion = (Get-Content -Path "$VersionFileLocal" | ConvertFrom-Json)."$CurrentProfileFileName"
 }
 Write-Verbose "Check: $PSLocalFileVersion, $PSProfileFileVersion" -Verbose
-Write-Host "Test: $VersionFileLocal, $CurrentProfileFileName"
-return
 
 # Test Version - Mismatch
 if ($PSLocalFileVersion -ne $PSProfileFileVersion) {
