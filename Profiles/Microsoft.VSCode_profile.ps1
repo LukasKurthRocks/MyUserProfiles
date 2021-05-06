@@ -205,10 +205,10 @@ else {
         # Versteckt den Namen in OhMyPosh, wenn "Default"
         $DefaultUser = "Kurth"
     }
-    if (get-module posh-git) {
+    if (Get-Module posh-git) {
         Import-Module posh-git
     }
-    if (get-module oh-my-posh) {
+    if (Get-Module oh-my-posh) {
         Import-Module oh-my-posh
     }
 

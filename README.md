@@ -5,15 +5,16 @@ Unter anderem für meine experimentellen winget settings, meine PowerShell Profi
 ## Pfade
 ### Windows
 
-- PowerShell
-    - Windows PowerShell
-    - PowerShell
-- Terminal
-    - Windows Terminal
-    - Windows Terminal Preview
+- PowerShell (same name)
+    - Windows PowerShell: ($HOME\Documents\PowerShell\Microsoft.PowerShell_profile.ps1)
+    - PowerShell: ($HOME\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1)
+    - VSCode: ($HOME\Documents\PowerShell\Microsoft.VSCode_profile.ps1)
 - VS Code
     - Visual Studio Code
     - Visual Studio Code Insider
+- Terminal
+    - Windows Terminal
+    - Windows Terminal Preview
 - Visual Studio
     - Extensions
     - Settings
