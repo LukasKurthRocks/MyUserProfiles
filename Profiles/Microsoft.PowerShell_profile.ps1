@@ -3,6 +3,7 @@
 #
 # Inspired by: Optimizing Profile: https://devblogs.microsoft.com/powershell/optimizing-your-profile/
 # TODO: Cleaning up this profile.
+# TODO: Version matching multiple? Changing online or create function for this?
 
 # Testing older versions: Skipping profile script.
 if ($PSVersionTable.PSVersion.Major -lt 5) {
@@ -205,10 +206,10 @@ else {
         # Versteckt den Namen in OhMyPosh, wenn "Default"
         $DefaultUser = "Kurth"
     }
-    if (get-module posh-git) {
+    if (Get-Module posh-git) {
         Import-Module posh-git
     }
-    if (get-module oh-my-posh) {
+    if (Get-Module oh-my-posh) {
         Import-Module oh-my-posh
     }
 

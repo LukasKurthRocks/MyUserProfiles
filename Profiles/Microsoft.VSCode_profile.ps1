@@ -3,6 +3,7 @@
 #
 # Inspired by: Optimizing Profile: https://devblogs.microsoft.com/powershell/optimizing-your-profile/
 # TODO: Cleaning up this profile.
+# TODO: Version matching multiple? Changing online or create function for this?
 
 # Testing older versions: Skipping profile script.
 if ($PSVersionTable.PSVersion.Major -lt 5) {
