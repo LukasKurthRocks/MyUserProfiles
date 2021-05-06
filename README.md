@@ -2,7 +2,7 @@
 
 Unter anderem für meine experimentellen winget settings, meine PowerShell Profile (POSH + PWSH)...
 
-Installation: `iex "& { $(irm https://github.com/LukasKurthRocks/MyUserProfiles/releases/latest/download/install.ps1) }"`
+Installation: `iex "& { $(irm https://raw.githubusercontent.com/LukasKurthRocks/MyUserProfiles/main/install.ps1) }"`
 
 ## Pfade
 ### Windows
