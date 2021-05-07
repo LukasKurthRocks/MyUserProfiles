@@ -56,13 +56,19 @@ if (Get-Module oh-my-posh) {
 
 # Extra check in case i miss this. Removed this from the profile.
 if (!(Get-Command -Name "Set-Theme" -ErrorAction SilentlyContinue) -and !(Get-Command -Name "Set-PoshPrompt" -ErrorAction SilentlyContinue)) {
-    if (!(Test-Path "$env:windir\Fonts\Delugia.Nerd.Font.ttf" -ErrorAction SilentlyContinue)) {
-        Write-Verbose "Loading 'Delugia.Nerd.Font.ttf' ..." -Verbose
-        Invoke-WebRequest -Uri "https://github.com/adam7/delugia-code/releases/latest/download/Delugia.Nerd.Font.ttf" -O "$env:windir\Fonts\Delugia.Nerd.Font.ttf"
-    }
-    if (!(Test-Path "$env:windir\Fonts\Delugia.Nerd.Font.Complete.ttf" -ErrorAction SilentlyContinue)) {
-        Write-Verbose "Loading 'Delugia.Nerd.Font.Complete.ttf' ..." -Verbose
-        Invoke-WebRequest -Uri "https://github.com/adam7/delugia-code/releases/latest/download/Delugia.Nerd.Font.Complete.ttf" -O "$env:windir\Fonts\Delugia.Nerd.Font.Complete.ttf"
+    if (!(Test-Path "$env:windir\Fonts\Delugia.Nerd.Font.ttf" -ErrorAction SilentlyContinue) -or !(Test-Path "$env:windir\Fonts\Delugia.Nerd.Font.Complete.ttf" -ErrorAction SilentlyContinue)) {
+        $objShell = New-Object -ComObject Shell.Application
+        $objFolder = $objShell.Namespace(0x14) # 0x14 = Fonts
+        if (!(Test-Path "$env:windir\Fonts\Delugia.Nerd.Font.ttf" -ErrorAction SilentlyContinue)) {
+            Write-Verbose "Loading 'Delugia.Nerd.Font.ttf' ..." -Verbose
+            Invoke-WebRequest -Uri "https://github.com/adam7/delugia-code/releases/latest/download/Delugia.Nerd.Font.ttf" -O "$env:windir\Fonts\Delugia.Nerd.Font.ttf"
+            $objFolder.CopyHere("$env:windir\Fonts\Delugia.Nerd.Font.ttf", 0x10)
+        }
+        if (!(Test-Path "$env:windir\Fonts\Delugia.Nerd.Font.Complete.ttf" -ErrorAction SilentlyContinue)) {
+            Write-Verbose "Loading 'Delugia.Nerd.Font.Complete.ttf' ..." -Verbose
+            Invoke-WebRequest -Uri "https://github.com/adam7/delugia-code/releases/latest/download/Delugia.Nerd.Font.Complete.ttf" -O "$env:windir\Fonts\Delugia.Nerd.Font.Complete.ttf"
+            $objFolder.CopyHere("$env:windir\Fonts\Delugia.Nerd.Font.ttf", 0x10)
+        }
     }
     if (!(Get-Module -Name "posh-git")) {
         Write-Verbose "Module 'posh-git' ..." -Verbose
