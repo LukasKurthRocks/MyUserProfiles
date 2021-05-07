@@ -47,9 +47,25 @@ if ($PSLocalFileVersion -ne $PSProfileFileVersion) {
 }
 #endregion
 
+if (Get-Module posh-git) {
+    Import-Module posh-git
+}
+if (Get-Module oh-my-posh) {
+    Import-Module oh-my-posh
+}
+
 # Extra check in case i miss this. Removed this from the profile.
 if (!(Get-Command -Name "Set-Theme" -ErrorAction SilentlyContinue)) {
-    Invoke-WebRequest -Uri "https://github.com/adam7/delugia-code/releases/latest/download/Delugia.Nerd.Font.ttf" -O "$env:windir\Fonts\Delugia.Nerd.Font.ttf"
-    Invoke-WebRequest -Uri "https://github.com/adam7/delugia-code/releases/latest/download/Delugia.Nerd.Font.Complete.ttf" -O "$env:windir\Fonts\Delugia.Nerd.Font.Complete.ttf"
-    Install-Module posh-git, oh-my-posh -Scope CurrentUser
+    if (!(Test-Path "$env:windir\Fonts\Delugia.Nerd.Font.ttf" -ErrorAction SilentlyContinue)) {
+        Invoke-WebRequest -Uri "https://github.com/adam7/delugia-code/releases/latest/download/Delugia.Nerd.Font.ttf" -O "$env:windir\Fonts\Delugia.Nerd.Font.ttf"
+    }
+    if (!(Test-Path "$env:windir\Fonts\Delugia.Nerd.Font.Complete.ttf" -ErrorAction SilentlyContinue)) {
+        Invoke-WebRequest -Uri "https://github.com/adam7/delugia-code/releases/latest/download/Delugia.Nerd.Font.Complete.ttf" -O "$env:windir\Fonts\Delugia.Nerd.Font.Complete.ttf"
+    }
+    if (!(Get-Module -Name "posh-git")) {
+        Install-Module posh-git -Scope CurrentUser
+    }
+    if (!(Get-Module -Name "oh-my-posh")) {
+        Install-Module oh-my-posh -Scope CurrentUser
+    }
 }
