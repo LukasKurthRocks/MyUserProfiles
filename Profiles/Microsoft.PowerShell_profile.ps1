@@ -224,7 +224,15 @@ else {
 
     # Installation Ordner: $ThemeSettings.MyThemesLocation
     # Offizielle Themes:   https://github.com/JanDeDobbeleer/oh-my-posh#themes
-    Set-Theme Agnoster
+    if (Get-Command -Name "Set-Theme" -ErrorAction SilentlyContinue) {
+        Set-Theme Agnoster
+    }
+    elseif (Get-Command -Name "Set-PoshPrompt" -ErrorAction SilentlyContinue) {
+        Set-PoshPrompt Agnoster
+    }
+    else {
+        Write-Host "Error: oh-my-posh not found. Please re-run install.ps1 script." -BackgroundColor Black -ForegroundColor Red
+    }
 }
 #endregion
 

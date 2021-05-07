@@ -55,7 +55,7 @@ if (Get-Module oh-my-posh) {
 }
 
 # Extra check in case i miss this. Removed this from the profile.
-if (!(Get-Command -Name "Set-Theme" -ErrorAction SilentlyContinue)) {
+if (!(Get-Command -Name "Set-Theme" -ErrorAction SilentlyContinue) -and !(Get-Command -Name "Set-PoshPrompt" -ErrorAction SilentlyContinue)) {
     if (!(Test-Path "$env:windir\Fonts\Delugia.Nerd.Font.ttf" -ErrorAction SilentlyContinue)) {
         Write-Verbose "Loading 'Delugia.Nerd.Font.ttf' ..." -Verbose
         Invoke-WebRequest -Uri "https://github.com/adam7/delugia-code/releases/latest/download/Delugia.Nerd.Font.ttf" -O "$env:windir\Fonts\Delugia.Nerd.Font.ttf"
