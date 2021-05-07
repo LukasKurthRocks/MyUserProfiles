@@ -25,7 +25,10 @@ if ($PSLocalFileVersion -ne $PSProfileFileVersion) {
             
             # Save version in file
             $GitHub_VersionFileContent = Invoke-RestMethod -Uri $GitHub_PSVersionsFile -ErrorAction Stop | ConvertTo-Json
-            Set-Content -Path "$VersionFileLocal" -Value $GitHub_VersionFileContent # save versions to file
+            $VersionFileLocalContent = Get-Content -Path "$VersionFileLocal" -ErrorAction SilentlyContinue
+            $VersionFileLocalContent."$CurrentProfileFileName" = $GitHub_VersionFileContent."$CurrentProfileFileName"
+            #Set-Content -Path "$VersionFileLocal" -Value $GitHub_VersionFileContent # save versions to file
+            Set-Content -Path "$VersionFileLocal" -Value $VersionFileLocalContent # save versions to file
             
             Write-Verbose "Installed newer version of profile" -Verbose
             . $profile
