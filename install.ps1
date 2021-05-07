@@ -57,15 +57,19 @@ if (Get-Module oh-my-posh) {
 # Extra check in case i miss this. Removed this from the profile.
 if (!(Get-Command -Name "Set-Theme" -ErrorAction SilentlyContinue)) {
     if (!(Test-Path "$env:windir\Fonts\Delugia.Nerd.Font.ttf" -ErrorAction SilentlyContinue)) {
+        Write-Verbose "Loading 'Delugia.Nerd.Font.ttf' ..." -Verbose
         Invoke-WebRequest -Uri "https://github.com/adam7/delugia-code/releases/latest/download/Delugia.Nerd.Font.ttf" -O "$env:windir\Fonts\Delugia.Nerd.Font.ttf"
     }
     if (!(Test-Path "$env:windir\Fonts\Delugia.Nerd.Font.Complete.ttf" -ErrorAction SilentlyContinue)) {
+        Write-Verbose "Loading 'Delugia.Nerd.Font.Complete.ttf' ..." -Verbose
         Invoke-WebRequest -Uri "https://github.com/adam7/delugia-code/releases/latest/download/Delugia.Nerd.Font.Complete.ttf" -O "$env:windir\Fonts\Delugia.Nerd.Font.Complete.ttf"
     }
     if (!(Get-Module -Name "posh-git")) {
+        Write-Verbose "Module 'posh-git' ..." -Verbose
         Install-Module posh-git -Scope CurrentUser
     }
     if (!(Get-Module -Name "oh-my-posh")) {
+        Write-Verbose "Module 'oh-my-posh' ..." -Verbose
         Install-Module oh-my-posh -Scope CurrentUser
     }
 }
