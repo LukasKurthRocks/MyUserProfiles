@@ -24,6 +24,7 @@ if ($PSLocalFileVersion -ne $PSProfileFileVersion) {
         try {
             # Save content in profile file
             $GitHub_FileContent = Invoke-RestMethod $GitHub_PSProfileFile -ErrorAction Stop
+            if (!(Test-Path -Path "$(Split-Path $profile)")) { $null = New-Item -Path "$(Split-Path $profile)" -ItemType Directory }
             Set-Content -Path $profile -Value $GitHub_FileContent -Force
             
             # Save version in file
