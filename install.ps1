@@ -11,7 +11,7 @@ if (Test-Path -Path "$VersionFileLocal" -ErrorAction SilentlyContinue) {
 }
 else {
     $PSLocalFileVersion = [Version]"0.0.0"
-    Set-Content -Path "$VersionFileLocal" -Value ( [ordered]@{} | ConvertTo-Json -Verbose )
+    Set-Content -Path "$VersionFileLocal" -Value ( [ordered]@{} | ConvertTo-Json )
 }
 Write-Verbose "Check: $PSLocalFileVersion, $PSProfileFileVersion" -Verbose
 
