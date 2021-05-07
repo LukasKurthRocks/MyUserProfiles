@@ -46,7 +46,7 @@ if ($PSLocalFileVersion -ne $PSProfileFileVersion) {
         }
         catch {
             # we can hit rate limit issue with GitHub since we're using anonymous
-            Write-Verbose "Was not able to access gist, try again next time $($_.Exception.Message)." -Verbose
+            Write-Verbose "Was not able to access gist, try again next time. $($_.Exception.Message)." -Verbose
         }
     }
 }
