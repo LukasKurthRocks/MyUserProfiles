@@ -221,9 +221,6 @@ else {
     if (Get-Module oh-my-posh) {
         Import-Module oh-my-posh
     }
-    if (!(Get-Command -Name "Set-Theme" -ErrorAction SilentlyContinue)) {
-        Write-Warning -Message "Command 'Set-Theme' not found. Run this: iwr https://github.com/adam7/delugia-code/releases/latest/download/Delugia.Nerd.Font.ttf -O `"$env:windir\Fonts\Delugia.Nerd.Font.ttf`"; iwr https://github.com/adam7/delugia-code/releases/latest/download/Delugia.Nerd.Font.Complete.ttf -O `"$env:windir\Fonts\Delugia.Nerd.Font.Complete.ttf`"; Install-Module posh-git, oh-my-posh -Scope CurrentUser"
-    }
 
     # Installation Ordner: $ThemeSettings.MyThemesLocation
     # Offizielle Themes:   https://github.com/JanDeDobbeleer/oh-my-posh#themes

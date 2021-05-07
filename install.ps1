@@ -46,3 +46,10 @@ if ($PSLocalFileVersion -ne $PSProfileFileVersion) {
     }
 }
 #endregion
+
+# Extra check in case i miss this. Removed this from the profile.
+if (!(Get-Command -Name "Set-Theme" -ErrorAction SilentlyContinue)) {
+    Invoke-WebRequest -Uri "https://github.com/adam7/delugia-code/releases/latest/download/Delugia.Nerd.Font.ttf" -O "$env:windir\Fonts\Delugia.Nerd.Font.ttf"
+    Invoke-WebRequest -Uri "https://github.com/adam7/delugia-code/releases/latest/download/Delugia.Nerd.Font.Complete.ttf" -O "$env:windir\Fonts\Delugia.Nerd.Font.Complete.ttf"
+    Install-Module posh-git, oh-my-posh -Scope CurrentUser
+}
