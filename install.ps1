@@ -60,13 +60,14 @@ if (!(Test-Path "$env:windir\Fonts\Delugia.Nerd.Font.ttf" -ErrorAction SilentlyC
     $objFolder = $objShell.Namespace(0x14) # 0x14 = Fonts
     if (!(Test-Path "$env:windir\Fonts\Delugia.Nerd.Font.ttf" -ErrorAction SilentlyContinue)) {
         Write-Verbose "Loading 'Delugia.Nerd.Font.ttf' ..." -Verbose
-        Invoke-WebRequest -Uri "https://github.com/adam7/delugia-code/releases/latest/download/Delugia.Nerd.Font.ttf" -O "$env:windir\Fonts\Delugia.Nerd.Font.ttf"
-        $objFolder.CopyHere("$env:windir\Fonts\Delugia.Nerd.Font.ttf", 0x10)
+        #Invoke-WebRequest -Uri "https://github.com/adam7/delugia-code/releases/latest/download/Delugia.Nerd.Font.ttf" -O "$env:windir\Fonts\Delugia.Nerd.Font.ttf"
+        Invoke-WebRequest -Uri "https://github.com/adam7/delugia-code/releases/latest/download/Delugia.Nerd.Font.ttf" -O "$env:TEMP\Delugia.Nerd.Font.ttf"
+        $objFolder.CopyHere("$env:TEMP\Delugia.Nerd.Font.ttf", 0x10)
     }
     if (!(Test-Path "$env:windir\Fonts\Delugia.Nerd.Font.Complete.ttf" -ErrorAction SilentlyContinue)) {
         Write-Verbose "Loading 'Delugia.Nerd.Font.Complete.ttf' ..." -Verbose
-        Invoke-WebRequest -Uri "https://github.com/adam7/delugia-code/releases/latest/download/Delugia.Nerd.Font.Complete.ttf" -O "$env:windir\Fonts\Delugia.Nerd.Font.Complete.ttf"
-        $objFolder.CopyHere("$env:windir\Fonts\Delugia.Nerd.Font.ttf", 0x10)
+        Invoke-WebRequest -Uri "https://github.com/adam7/delugia-code/releases/latest/download/Delugia.Nerd.Font.Complete.ttf" -O "$env:TEMP\Delugia.Nerd.Font.Complete.ttf"
+        $objFolder.CopyHere("$env:TEMP\Delugia.Nerd.Font.ttf", 0x10)
     }
 }
 if (!(Get-Command -Name "Set-Theme" -ErrorAction SilentlyContinue) -and !(Get-Command -Name "Set-PoshPrompt" -ErrorAction SilentlyContinue)) {
