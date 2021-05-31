@@ -1,18 +1,25 @@
-# MyUserProfiles - Meine Profile
+# Meine PowerShell Profile
 
-Unter anderem für meine experimentellen winget settings, meine PowerShell Profile (POSH + PWSH)...
+Dieses Repository dient meinen öffentlich zugänglichen User-Profilen.
 
 Installation: `iex $(irm https://raw.githubusercontent.com/LukasKurthRocks/MyUserProfiles/main/install.ps1)`\
 Installation: `iex $((iwr https://raw.githubusercontent.com/LukasKurthRocks/MyUserProfiles/main/install.ps1).Content)`
 
+## Anmerkung
+Das funktioniert für das PowerShell Profil, weil ich Scripts die ich eventuell benötige in Module oder einen Sub-Ordner packen kann.
+Für Windows Terminal funktioniert das nicht, da ich hier private oder geschäftliche Verbindungen und Daten mit einbinden muss.
+
+Außerdem wollte ich WinGet Settings mit rein nehmen, aber seit Version 1.0 sind die experimentellen Settings - die ich mit der Settings Datei aktivieren wollte - alle implementiert/aktiviert worden. Hat daher keine Verwendung hier.
+
+Ein paar Sachen zur "frischen Installation" (Settings etc.) muss ich daher in ein privates Repo packen.
+
 ## Pfade
 ### Windows
-
 - PowerShell (same name)
     - Windows PowerShell: `$HOME\Documents\PowerShell\Microsoft.PowerShell_profile.ps1`
     - PowerShell: `$HOME\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1`
     - VSCode: `$HOME\Documents\PowerShell\Microsoft.VSCode_profile.ps1`
-- VS Code
+- ~~VS Code~~
     - Visual Studio Code
     - Visual Studio Code Insider
 - Terminal
