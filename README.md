@@ -15,10 +15,14 @@ Ein paar Sachen zur "frischen Installation" (VS-Settings, WindowsTerminal Settin
 
 ## Pfade
 ### Windows
-- PowerShell (same name)
-    - Windows PowerShell: `$HOME\Documents\PowerShell\Microsoft.PowerShell_profile.ps1`
-    - PowerShell: `$HOME\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1`
-    - VSCode: `$HOME\Documents\PowerShell\Microsoft.VSCode_profile.ps1`
+Verschiedene Instanzen von PowerShell haben verschiedene Profil-Pfade.
+
+| Profil             | Pfad           |
+| ------------------ | -------------- |
+| Windows PowerShell | `$HOME\Documents\PowerShell\Microsoft.PowerShell_profile.ps1` |
+| PowerShell         | `$HOME\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1` |
+| ISE                | `$HOME\Documents\WindowsPowerShell\Microsoft.PowerShellISE_profile.ps1` |
+| VS Code            | `$HOME\Documents\PowerShell\Microsoft.VSCode_profile.ps1` |
 
 ## Vorraussetzungen
 Die Sachen hier packe ich so nicht in das Profil mit rein (vielleicht als Kommentar). Einmal installiert braucht diese Abfrage wieder keiner.
