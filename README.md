@@ -11,7 +11,7 @@ Für Windows Terminal funktioniert das nicht, da ich hier private oder geschäft
 
 Außerdem wollte ich WinGet Settings mit rein nehmen, aber seit Version 1.0 sind die experimentellen Settings - die ich mit der Settings Datei aktivieren wollte - alle implementiert/aktiviert worden. Hat daher keine Verwendung hier.
 
-Ein paar Sachen zur "frischen Installation" (Settings etc.) muss ich daher in ein privates Repo packen.
+Ein paar Sachen zur "frischen Installation" (VS-Settings, WindowsTerminal Settings/Profile etc.) muss ich daher in ein privates Repo packen.
 
 ## Pfade
 ### Windows
@@ -19,16 +19,6 @@ Ein paar Sachen zur "frischen Installation" (Settings etc.) muss ich daher in ei
     - Windows PowerShell: `$HOME\Documents\PowerShell\Microsoft.PowerShell_profile.ps1`
     - PowerShell: `$HOME\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1`
     - VSCode: `$HOME\Documents\PowerShell\Microsoft.VSCode_profile.ps1`
-- ~~VS Code~~
-    - Visual Studio Code
-    - Visual Studio Code Insider
-- Terminal
-    - Windows Terminal
-    - Windows Terminal Preview
-- Visual Studio
-    - Extensions
-    - Settings
-- WinGet (Desktop Installer)
 
 ## Vorraussetzungen
 Die Sachen hier packe ich so nicht in das Profil mit rein (vielleicht als Kommentar). Einmal installiert braucht diese Abfrage wieder keiner.
