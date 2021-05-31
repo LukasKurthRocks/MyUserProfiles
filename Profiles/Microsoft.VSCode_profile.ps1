@@ -310,4 +310,4 @@ else {
     #Get-Weather -Verbose:$VerboseProfile
     #$Error.Clear()
 }
-Remove-Variable $TerminalType
+Remove-Variable -Name "TerminalType"
