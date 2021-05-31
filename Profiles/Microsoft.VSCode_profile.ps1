@@ -4,11 +4,25 @@
 # Inspired by: Optimizing Profile: https://devblogs.microsoft.com/powershell/optimizing-your-profile/
 # TODO: Cleaning up this profile.
 # TODO: Version matching multiple? Changing online or create function for this?
+# MORE INFORMATION:
+# - ShortCuts in ProfileScripts folder
+# - WinFetch function in ProfileScripts folder
+# "language bug": https://github.com/PowerShell/PowerShellModuleCoverage/issues/18
+#Invoke-WebRequest "https://raw.githubusercontent.com/lptstr/winfetch/master/winfetch.ps1" -UseBasicParsing | Invoke-Expression -ErrorAction SilentlyContinue -Verbose
 
-# Testing older versions: Skipping profile script.
+# Skipping profile when testing with older PowerShell versions.
 if ($PSVersionTable.PSVersion.Major -lt 5) {
     return
 }
+
+#region Configuration
+# Set Default Parameters
+$PSDefaultParameterValues['Get-Help:ShowWindow'] = $true
+$PSDefaultParameterValues['Send-MailMessage:From'] = "$env:USERNAME@$env:COMPUTERNAME.lokal"
+$VerboseProfile = $false
+$IsPartOfDomain = (Get-CimInstance -ClassName Win32_ComputerSystem).PartOfDomain
+$DoBackupPowerShellHistory = $true
+#endregion
 
 #region Syncable PS Profile
 # NOTE: GitHub RAW has 'Cache-Control: max-age=300' setting. Means: Sync is 5 Minutes.
@@ -45,22 +59,14 @@ if ($PSLocalFileVersion -ne $PSProfileFileVersion) {
             return
         }
         catch {
-            # we can hit rate limit issue with GitHub since we're using anonymous
-            Write-Verbose "Was not able to access gist, try again next time." -Verbose
+            # Git has rate limit issue, since using anonymous
+            Write-Verbose "Error accessing github, try again next time." -Verbose
         }
     }
 }
 #endregion
 
-#region Configuration
-# Set Default Parameters
-$PSDefaultParameterValues['Get-Help:ShowWindow'] = $true
-$PSDefaultParameterValues['Send-MailMessage:From'] = "$env:USERNAME@$env:COMPUTERNAME.lokal"
-$VerboseProfile = $false
-$IsPartOfDomain = (Get-CimInstance -ClassName  Win32_ComputerSystem).PartOfDomain
-#endregion
-
-# Save default functions for comparison
+# Save default functions for comparing imported functions
 $SystemFunction = Get-ChildItem function:
 $SystemAliasses = Get-Alias
 
@@ -124,7 +130,7 @@ function IsConsoleRunningElevated {
 function Quad9Test {
     [CmdLetBinding()]
     param()
-
+    
     $ping = New-Object -TypeName System.Net.NetworkInformation.Ping
     $pingreturns = $ping.send("9.9.9.9")
     
@@ -147,14 +153,6 @@ function Get-Weather {
         (Invoke-WebRequest "http://wttr.in/~Rothenburg,Germany?q0&lang=de" -UserAgent "curl" ).Content
     }
 }
-#endregion
-
-# Apply ISE Code
-if ($psISE -or (Get-PowerShellTerminalType).content -eq "Windows PowerShell ISE") {
-    Write-Verbose "PowerShell Host Name: $($Host.Name)" -Verbose:$VerboseProfile
-    #$Host.Name -eq 'Windows PowerShell ISE Host'
-}
-# ServerRemoteHost | RemoteHost => Sowohl Admin Center, als auch Enter-PSSession
 
 # Import Functions
 if (Test-Path -Path "$PSScriptRoot\profile_scripts" -ErrorAction SilentlyContinue) {
@@ -164,10 +162,40 @@ if (Test-Path -Path "$PSScriptRoot\profile_scripts" -ErrorAction SilentlyContinu
         Where-Object { !($_.ProviderPath.Contains("TEST")) } | `
         Foreach-Object { . $_.ProviderPath }
 }
+#endregion
 
 #region Theme Settings
-# Windows Terminal has THEME-ING with own prompt
-if (!$env:WT_Session) {
+# Windows Terminal has THEME-ING with own prompt ...
+# Delugia.Nerd.Font.Complete.ttf + Delugia.Nerd.Font.ttf
+# Install-Module posh-git -Scope CurrentUser
+# Install-Module oh-my-posh -Scope CurrentUser
+# Setting for themes: $ThemeSettings, $GitPromptSettings
+# Like setting "$ThemeSettings.PromptSymbols.ElevatedSymbol" for showing the admin status.
+if ($env:WT_Session) {
+    if (IsConsoleRunningElevated) {
+        # Hiding user name from prompt when "Default" user
+        $DefaultUser = "Kurth"
+    }
+    if (Get-Module posh-git) {
+        Import-Module posh-git
+    }
+    if (Get-Module oh-my-posh) {
+        Import-Module oh-my-posh
+    }
+
+    # Installation folder: $ThemeSettings.MyThemesLocation
+    # Official themes  :   https://github.com/JanDeDobbeleer/oh-my-posh#themes
+    if (Get-Command -Name "Set-Theme" -ErrorAction SilentlyContinue) {
+        Set-Theme Agnoster
+    }
+    elseif (Get-Command -Name "Set-PoshPrompt" -ErrorAction SilentlyContinue) {
+        Set-PoshPrompt Agnoster
+    }
+    else {
+        Write-Host "Error: oh-my-posh not found. Please re-run install.ps1 script." -BackgroundColor Black -ForegroundColor Red
+    }
+}
+else {
     # set execution time before commands
     function global:prompt {
         $arrows = '>'
@@ -201,46 +229,11 @@ if (!$env:WT_Session) {
     }
     
     if ($IsPartOfDomain) {
-        # Bei mir ist die Farbe der Argumente falsch.
+        # Color of the parameters is broken in this machine.
         Set-PSReadLineOption -Colors @{ Parameter = 'Gray' }
     }
 }
-# Delugia.Nerd.Font.Complete.ttf + Delugia.Nerd.Font.ttf
-# Install-Module posh-git -Scope CurrentUser
-# Install-Module oh-my-posh -Scope CurrentUser
-# Man kann Einstellungen fuer die Themes setzen: $ThemeSettings, $GitPromptSettings
-# So sieht man anhand von "$ThemeSettings.PromptSymbols.ElevatedSymbol", dass es im Admin laeuft oder nicht.
-else {
-    if (IsConsoleRunningElevated) {
-        # Versteckt den Namen in OhMyPosh, wenn "Default"
-        $DefaultUser = "Kurth"
-    }
-    if (Get-Module posh-git) {
-        Import-Module posh-git
-    }
-    if (Get-Module oh-my-posh) {
-        Import-Module oh-my-posh
-    }
-
-    # Installation Ordner: $ThemeSettings.MyThemesLocation
-    # Offizielle Themes:   https://github.com/JanDeDobbeleer/oh-my-posh#themes
-    if (Get-Command -Name "Set-Theme" -ErrorAction SilentlyContinue) {
-        Set-Theme Agnoster
-    }
-    elseif (Get-Command -Name "Set-PoshPrompt" -ErrorAction SilentlyContinue) {
-        Set-PoshPrompt Agnoster
-    }
-    else {
-        Write-Host "Error: oh-my-posh not found. Please re-run install.ps1 script." -BackgroundColor Black -ForegroundColor Red
-    }
-}
 #endregion
-
-function Get-ProfileFunctions { Get-ChildItem function: | Where-Object { ($SystemFunction -notcontains $_) } }
-function Get-ProfileAliasses { Get-Alias | Where-Object { ($SystemAliasses -notcontains $_) } }
-
-Set-Alias -Name 'profileFunc' -Value 'Get-ProfileFunctions'
-Set-Alias -Name 'profileAlias' -Value 'Get-ProfileAliasses'
 
 # Winget Argument Completer
 Register-ArgumentCompleter -Native -CommandName winget -ScriptBlock {
@@ -253,53 +246,68 @@ Register-ArgumentCompleter -Native -CommandName winget -ScriptBlock {
     }
 }
 
-# TODO: Still needing improvements
-function Backup-PowerShellHistory {
-    # "$env:APPDATA\Microsoft\Windows\PowerShell\PSReadline\ConsoleHost_history.txt"
-    # Current Session Log: Get-History
-    [CmdLetBinding()]
-    param([switch]$WhatIf)
+if ($DoBackupPowerShellHistory) {
+    # Could be improved... Sometimes...
+    # Copying the current History into new file.
+    & {
+        function Backup-PowerShellHistory {
+            # "$env:APPDATA\Microsoft\Windows\PowerShell\PSReadline\ConsoleHost_history.txt"
+            # Current Session Log: Get-History
+            [CmdLetBinding()]
+            param([switch]$WhatIf)
 
-    $YesterDayBackupDate = (Get-Date -Hour 0 -Minute 0 -Second 0).AddDays(-1)
-    $PowerShellHistoryPath = (Get-PSReadlineOption).HistorySavePath
+            $YesterDayBackupDate = (Get-Date -Hour 0 -Minute 0 -Second 0).AddDays(-1)
+            $PowerShellHistoryPath = (Get-PSReadlineOption).HistorySavePath
 
-    if (!(Test-Path -Path "$PowerShellHistoryPath")) {
-        Write-Verbose "PS history file '$PowerShellHistoryPath' not found."
-        return
+            if (!(Test-Path -Path "$PowerShellHistoryPath")) {
+                Write-Verbose "PS history file '$PowerShellHistoryPath' not found."
+                return
+            }
+
+            # *_history_202011.txt
+            $PSHistoryItem = Get-Item -Path "$PowerShellHistoryPath"
+            $NewHistoryName = "$($PSHistoryItem.BaseName)_$($YesterDayBackupDate.ToString("yyMMdd"))$($PSHistoryItem.Extension)"
+            $NewHistoryPath = "$($PSHistoryItem.Directory.FullName)\$NewHistoryName"
+
+            if (Test-Path "$NewHistoryPath") {
+                Write-Verbose "File '$NewHistoryPath' already exist."
+                return
+            }
+
+            $null = Copy-Item -Path "$PowerShellHistoryPath" -Destination "$NewHistoryPath" -WhatIf:$WhatIf
+            #$null = Rename-Item -Path "$PowerShellHistoryPath" -NewName "$NewHistoryName" -WhatIf:$WhatIf
+        }
+        Backup-PowerShellHistory -WhatIf:$false -Verbose:$VerboseProfile
     }
-
-    # *_history_202011.txt
-    $PSHistoryItem = Get-Item -Path "$PowerShellHistoryPath"
-    $NewHistoryName = "$($PSHistoryItem.BaseName)_$($YesterDayBackupDate.ToString("yyMMdd"))$($PSHistoryItem.Extension)"
-    $NewHistoryPath = "$($PSHistoryItem.Directory.FullName)\$NewHistoryName"
-
-    if (Test-Path "$NewHistoryPath") {
-        Write-Verbose "File '$NewHistoryPath' already exist."
-        return
-    }
-
-    $null = Copy-Item -Path "$PowerShellHistoryPath" -Destination "$NewHistoryPath" -WhatIf:$WhatIf
-    #$null = Rename-Item -Path "$PowerShellHistoryPath" -NewName "$NewHistoryName" -WhatIf:$WhatIf
 }
-Backup-PowerShellHistory -WhatIf:$false -Verbose:$VerboseProfile
 
+function Get-ProfileFunctions { Get-ChildItem function: | Where-Object { ($SystemFunction -notcontains $_) } }
+function Get-ProfileAliasses { Get-Alias | Where-Object { ($SystemAliasses -notcontains $_) } }
+
+Set-Alias -Name 'profileFunc' -Value 'Get-ProfileFunctions'
+Set-Alias -Name 'profileAlias' -Value 'Get-ProfileAliasses'
+
+# TODO: Only PowerShell Profile + ISE?
 if (Test-Path C:\ -ErrorAction SilentlyContinue) {
     Set-Location C:\
 }
 
-# "language bug": https://github.com/PowerShell/PowerShellModuleCoverage/issues/18
-#Invoke-WebRequest "https://raw.githubusercontent.com/lptstr/winfetch/master/winfetch.ps1" -UseBasicParsing | Invoke-Expression -ErrorAction SilentlyContinue -Verbose
-if ((Get-PowerShellTerminalType).content -eq "Visual Studio Code") {
+# TESTING: When used?
+# Apply ISE Code
+$TerminalType = (Get-PowerShellTerminalType).content
+if ($psISE -or $TerminalType -eq "Windows PowerShell ISE") {
+    Write-Verbose "PowerShell Host Name: $($Host.Name)" -Verbose:$VerboseProfile
+    #$Host.Name -eq 'Windows PowerShell ISE Host'
+}
+# ServerRemoteHost | RemoteHost => Sowohl Admin Center, als auch Enter-PSSession
+
+if ($TerminalType -eq "Visual Studio Code") {
     Write-Verbose "Inside of code" -Verbose:$VerboseProfile
     #Clear-Host
 }
 else {
-    # Wetter Informationen anzeigen beim Starten des Profiles...
+    # Showing weather information for my "hometown"
     #Get-Weather -Verbose:$VerboseProfile
-
-    $Error.Clear()
+    #$Error.Clear()
 }
-
-# MORE INFORMATION:
-# - ShortCuts in ProfileScripts folder
-# - WinFetch function in ProfileScripts folder
+Remove-Variable $TerminalType
