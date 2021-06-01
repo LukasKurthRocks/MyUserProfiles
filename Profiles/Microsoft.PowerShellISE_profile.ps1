@@ -128,7 +128,7 @@ function IsConsoleRunningElevated {
 
 # Import Functions
 if (Test-Path -Path "$PSScriptRoot\profile_scripts" -ErrorAction SilentlyContinue) {
-    $Host.UI.RawUI.WindowTitle = "PROFILE: Loading scripts folder"
+    #$Host.UI.RawUI.WindowTitle = "PROFILE: Loading scripts folder"
 
     Resolve-Path "$PSScriptRoot\profile_scripts\*.ps1" | `
         Where-Object { !($_.ProviderPath.Contains("TEST")) } | `

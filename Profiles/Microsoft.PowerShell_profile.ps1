@@ -7,6 +7,7 @@
 # MORE INFORMATION:
 # - ShortCuts in ProfileScripts folder
 # - WinFetch function in ProfileScripts folder
+# - CMatrix Screensaver moved ...
 # "language bug": https://github.com/PowerShell/PowerShellModuleCoverage/issues/18
 #Invoke-WebRequest "https://raw.githubusercontent.com/lptstr/winfetch/master/winfetch.ps1" -UseBasicParsing | Invoke-Expression -ErrorAction SilentlyContinue -Verbose
 
