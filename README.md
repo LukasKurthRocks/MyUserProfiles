@@ -4,7 +4,8 @@ Dieses Repository dient meinen öffentlich zugänglichen User-Profilen.
 Installation: `iex $(irm https://raw.githubusercontent.com/LukasKurthRocks/MyUserProfiles/main/install.ps1)`\
 Installation: `iex $((iwr https://raw.githubusercontent.com/LukasKurthRocks/MyUserProfiles/main/install.ps1).Content)`
 
-![Profile Update Process Example](Assets/ProfileUpdate01.png)
+![Profile Update Process Example](Assets/ProfileUpdate01.png)\
+Die Zeiten sind nur so hoch, weil ich nicht sofort mit Y bestätigt habe.
 
 ## Anmerkung
 Das funktioniert für das PowerShell Profil, weil ich Scripts die ich eventuell benötige in Module oder einen Sub-Ordner packen kann.
