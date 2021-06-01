@@ -165,6 +165,9 @@ if (Test-Path -Path "$PSScriptRoot\profile_scripts" -ErrorAction SilentlyContinu
 #endregion
 
 # REMOVED THEME SETTINGS IN ISE!
+if (Test-Path C:\ -ErrorAction SilentlyContinue) {
+    Set-Location C:\
+}
 
 # Winget Argument Completer
 Register-ArgumentCompleter -Native -CommandName winget -ScriptBlock {
