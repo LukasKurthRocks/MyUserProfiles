@@ -1,5 +1,6 @@
 #
 #  THIS IS MY PROFILE. THIS MIGHT BREAK YOURS!
+#  + This is ISE, profile is shorter!
 #
 # Inspired by: Optimizing Profile: https://devblogs.microsoft.com/powershell/optimizing-your-profile/
 # TODO: Cleaning up this profile.
@@ -20,8 +21,6 @@ if ($PSVersionTable.PSVersion.Major -lt 5) {
 $PSDefaultParameterValues['Get-Help:ShowWindow'] = $true
 $PSDefaultParameterValues['Send-MailMessage:From'] = "$env:USERNAME@$env:COMPUTERNAME.lokal"
 $VerboseProfile = $false
-$IsPartOfDomain = (Get-CimInstance -ClassName Win32_ComputerSystem).PartOfDomain
-$DoBackupPowerShellHistory = $true
 #endregion
 
 #region Syncable PS Profile
@@ -127,33 +126,6 @@ function IsConsoleRunningElevated {
     return $princ.IsInRole([System.Security.Principal.WindowsBuiltInRole]::Administrator)
 }
 
-function Quad9Test {
-    [CmdLetBinding()]
-    param()
-    
-    $ping = New-Object -TypeName System.Net.NetworkInformation.Ping
-    $pingreturns = $ping.send("9.9.9.9")
-    
-    if ($pingreturns.Status -eq "Success") {
-        Write-Verbose "Quad9 test successful"
-        return $true
-    }
-    else {
-        Write-Verbose "Quad9 test failed $($pingreturns.Status). Please reconnect to network and try again."
-        return $false
-    }
-}
-
-# Weather Forecast. For more informations: (curl http://wttr.in/:help -UserAgent "curl" ).Content
-function Get-Weather {
-    [CmdLetBinding()]
-    param()
-
-    if (Quad9Test -Verbose:$VerbosePreference) {
-        (Invoke-WebRequest "http://wttr.in/~Rothenburg,Germany?q0&lang=de" -UserAgent "curl" ).Content
-    }
-}
-
 # Import Functions
 if (Test-Path -Path "$PSScriptRoot\profile_scripts" -ErrorAction SilentlyContinue) {
     $Host.UI.RawUI.WindowTitle = "PROFILE: Loading scripts folder"
@@ -164,7 +136,6 @@ if (Test-Path -Path "$PSScriptRoot\profile_scripts" -ErrorAction SilentlyContinu
 }
 #endregion
 
-# REMOVED THEME SETTINGS IN ISE!
 if (Test-Path C:\ -ErrorAction SilentlyContinue) {
     Set-Location C:\
 }
@@ -177,41 +148,6 @@ Register-ArgumentCompleter -Native -CommandName winget -ScriptBlock {
     $Local:ast = $commandAst.ToString().Replace('"', '""')
     winget complete --word="$Local:word" --commandline "$Local:ast" --position $cursorPosition | ForEach-Object {
         [System.Management.Automation.CompletionResult]::new($_, $_, 'ParameterValue', $_)
-    }
-}
-
-if ($DoBackupPowerShellHistory) {
-    # Could be improved... Sometime in the future...
-    # Copying the current history into new file.
-    & {
-        function Backup-PowerShellHistory {
-            # "$env:APPDATA\Microsoft\Windows\PowerShell\PSReadline\ConsoleHost_history.txt"
-            # Current Session Log: Get-History
-            [CmdLetBinding()]
-            param([switch]$WhatIf)
-
-            $YesterDayBackupDate = (Get-Date -Hour 0 -Minute 0 -Second 0).AddDays(-1)
-            $PowerShellHistoryPath = (Get-PSReadlineOption).HistorySavePath
-
-            if (!(Test-Path -Path "$PowerShellHistoryPath")) {
-                Write-Verbose "PS history file '$PowerShellHistoryPath' not found."
-                return
-            }
-
-            # *_history_202011.txt
-            $PSHistoryItem = Get-Item -Path "$PowerShellHistoryPath"
-            $NewHistoryName = "$($PSHistoryItem.BaseName)_$($YesterDayBackupDate.ToString("yyMMdd"))$($PSHistoryItem.Extension)"
-            $NewHistoryPath = "$($PSHistoryItem.Directory.FullName)\$NewHistoryName"
-
-            if (Test-Path "$NewHistoryPath") {
-                Write-Verbose "File '$NewHistoryPath' already exist."
-                return
-            }
-
-            $null = Copy-Item -Path "$PowerShellHistoryPath" -Destination "$NewHistoryPath" -WhatIf:$WhatIf
-            #$null = Rename-Item -Path "$PowerShellHistoryPath" -NewName "$NewHistoryName" -WhatIf:$WhatIf
-        }
-        Backup-PowerShellHistory -WhatIf:$false -Verbose:$VerboseProfile
     }
 }
 
