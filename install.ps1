@@ -13,7 +13,7 @@ else {
     $PSLocalFileVersion = [Version]"0.0.0"
     Set-Content -Path "$VersionFileLocal" -Value ( [ordered]@{} | ConvertTo-Json )
 }
-Write-Verbose "Check: $PSLocalFileVersion, $PSProfileFileVersion" -Verbose
+Write-Verbose "Check: $PSLocalFileVersion, $PSProfileFileVersion; ProfileName: $CurrentProfileFileName" -Verbose
 
 # Test Version - Mismatch
 if ($PSLocalFileVersion -ne $PSProfileFileVersion) {
