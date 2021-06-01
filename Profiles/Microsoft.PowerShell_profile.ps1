@@ -175,7 +175,11 @@ if (Test-Path -Path "$PSScriptRoot\profile_scripts" -ErrorAction SilentlyContinu
 if ($env:WT_Session) {
     if (IsConsoleRunningElevated) {
         # Hiding user name from prompt when "Default" user
-        $DefaultUser = "Kurth"
+        if ($IsPartOfDomain) {
+            $DefaultUser = "Kurth"
+        } else {
+            $DefaultUser = "Lukas"
+        }
     }
     if (Get-Module posh-git) {
         Import-Module posh-git
