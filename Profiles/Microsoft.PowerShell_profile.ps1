@@ -176,6 +176,7 @@ if ($env:WT_Session) {
     if (IsConsoleRunningElevated) {
         # Hiding user name from prompt when "Default" user
         $global:DefaultUser = [System.Environment]::UserName
+        $env:POSH_SESSION_DEFAULT_USER = [System.Environment]::UserName
     }
     if (Get-Module posh-git) {
         Import-Module posh-git
