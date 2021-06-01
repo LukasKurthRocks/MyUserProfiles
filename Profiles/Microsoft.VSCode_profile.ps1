@@ -229,8 +229,14 @@ else {
     }
     
     if ($IsPartOfDomain) {
-        # Color of the parameters is broken in this machine.
+        # Color of "parameter" is broken on pc at work.
         Set-PSReadLineOption -Colors @{ Parameter = 'Gray' }
+    }
+
+    # Set location to main drive when using PowerShell without WindowsTerminal
+    # WindowsTerminal has own settings for this.
+    if (Test-Path C:\ -ErrorAction SilentlyContinue) {
+        Set-Location C:\
     }
 }
 #endregion
@@ -247,8 +253,8 @@ Register-ArgumentCompleter -Native -CommandName winget -ScriptBlock {
 }
 
 if ($DoBackupPowerShellHistory) {
-    # Could be improved... Sometimes...
-    # Copying the current History into new file.
+    # Could be improved... Sometime in the future...
+    # Copying the current history into new file.
     & {
         function Backup-PowerShellHistory {
             # "$env:APPDATA\Microsoft\Windows\PowerShell\PSReadline\ConsoleHost_history.txt"
@@ -287,12 +293,7 @@ function Get-ProfileAliasses { Get-Alias | Where-Object { ($SystemAliasses -notc
 Set-Alias -Name 'profileFunc' -Value 'Get-ProfileFunctions'
 Set-Alias -Name 'profileAlias' -Value 'Get-ProfileAliasses'
 
-# TODO: Only PowerShell Profile + ISE?
-if (Test-Path C:\ -ErrorAction SilentlyContinue) {
-    Set-Location C:\
-}
-
-# TESTING: When used?
+#region TESTING
 # Apply ISE Code
 $TerminalType = (Get-PowerShellTerminalType).content
 if ($psISE -or $TerminalType -eq "Windows PowerShell ISE") {
@@ -302,7 +303,7 @@ if ($psISE -or $TerminalType -eq "Windows PowerShell ISE") {
 # ServerRemoteHost | RemoteHost => Sowohl Admin Center, als auch Enter-PSSession
 
 if ($TerminalType -eq "Visual Studio Code") {
-    Write-Verbose "Inside of code" -Verbose:$VerboseProfile
+    Write-Verbose "Inside of VSCode" -Verbose:$VerboseProfile
     #Clear-Host
 }
 else {
@@ -311,3 +312,4 @@ else {
     #$Error.Clear()
 }
 Remove-Variable -Name "TerminalType"
+#endregion

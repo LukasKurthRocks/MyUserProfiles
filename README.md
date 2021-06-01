@@ -15,7 +15,6 @@ Außerdem wollte ich WinGet Settings mit rein nehmen, aber seit Version 1.0 sind
 Ein paar Sachen zur "frischen Installation" (VS-Settings, WindowsTerminal Settings/Profile etc.) muss ich daher in ein privates Repo packen.
 
 ## Pfade
-### Windows
 Verschiedene Instanzen von PowerShell haben verschiedene Profil-Pfade.
 
 | Profil             | Pfad           |
