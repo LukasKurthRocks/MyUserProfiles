@@ -174,7 +174,8 @@ if (Test-Path -Path "$PSScriptRoot\profile_scripts" -ErrorAction SilentlyContinu
 # Like setting "$ThemeSettings.PromptSymbols.ElevatedSymbol" for showing the admin status.
 if ($env:WT_Session) {
     if (IsConsoleRunningElevated) {
-        # Hiding user name from prompt when "Default" user
+        # Hiding user name from prompt when "Default" user.
+        # Using both, as this might not work in PSCore version.
         $global:DefaultUser = [System.Environment]::UserName
         $env:POSH_SESSION_DEFAULT_USER = [System.Environment]::UserName
     }
