@@ -54,18 +54,21 @@ if (Get-Module oh-my-posh) {
     Import-Module oh-my-posh
 }
 
-# Extra checks in case I miss this. Removed this from the profile.
+# Extra checks in case I miss this.
 if (!(Test-Path "$env:windir\Fonts\Delugia.Nerd.Font.ttf" -ErrorAction SilentlyContinue) -or !(Test-Path "$env:windir\Fonts\Delugia.Nerd.Font.Complete.ttf" -ErrorAction SilentlyContinue)) {
     $objShell = New-Object -ComObject Shell.Application
-    $objFolder = $objShell.Namespace(0x14) # 0x14 = Fonts
-
-    @("Delugia.Nerd.Font.ttf", "Delugia.Nerd.Font.Complete.ttf") | ForEach-Object {
-        $FontFileName = $_
-        if (!(Test-Path "$env:windir\Fonts\$FontFileName" -ErrorAction SilentlyContinue)) {
-            Write-Verbose "Loading '$FontFileName' ..." -Verbose
-            Invoke-WebRequest -Uri "https://github.com/adam7/delugia-code/releases/latest/download/$FontFileName" -O "$env:TEMP\$FontFileName"
-            $objFolder.CopyHere("$env:TEMP\$FontFileName", 0x10)
-            Remove-Item -Path "$env:TEMP\$FontFileName"
+    $InstallFont = $objShell.Namespace(0x14) # 0x14 = Fonts
+    
+    # Check if font is registered (file existing does not count).
+    if (!($InstallFont.Items() | Where-Object { $_.Name -match "Delugia Nerd Font" })) {
+        @("Delugia.Nerd.Font.ttf", "Delugia.Nerd.Font.Complete.ttf") | ForEach-Object {
+            $FontFileName = $_
+            if (!(Test-Path "$env:windir\Fonts\$FontFileName" -ErrorAction SilentlyContinue)) {
+                Write-Verbose "Loading '$FontFileName' ..." -Verbose
+                Invoke-WebRequest -Uri "https://github.com/adam7/delugia-code/releases/latest/download/$FontFileName" -O "$env:TEMP\$FontFileName"
+                $InstallFont.CopyHere("$env:TEMP\$FontFileName", 0x10)
+                Remove-Item -Path "$env:TEMP\$FontFileName"
+            }
         }
     }
 }
