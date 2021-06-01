@@ -28,8 +28,8 @@ Verschiedene Instanzen von PowerShell haben verschiedene Profil-Pfade.
 Die Sachen hier packe ich so nicht in das Profil mit rein (vielleicht als Kommentar). Einmal installiert braucht diese Abfrage wieder keiner.
 
 - Schriftarten
-    - https://github.com/adam7/delugia-code/releases/latest/download/Delugia.Nerd.Font.ttf
-    - https://github.com/adam7/delugia-code/releases/latest/download/Delugia.Nerd.Font.Complete.ttf
+    - [Delugia.Nerd.Font.ttf](https://github.com/adam7/delugia-code/releases/latest/download/Delugia.Nerd.Font.ttf "Download Font from GitHub")
+    - [Delugia.Nerd.Font.Complete.ttf](https://github.com/adam7/delugia-code/releases/latest/download/Delugia.Nerd.Font.Complete.ttf "Download Font from GitHub")
 - Module
     - Install-Module posh-git -Scope CurrentUser
     - Install-Module oh-my-posh -Scope CurrentUser
