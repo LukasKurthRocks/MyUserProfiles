@@ -14,6 +14,8 @@ Außerdem wollte ich WinGet Settings mit rein nehmen, aber seit Version 1.0 sind
 
 Ein paar Sachen zur "frischen Installation" (VS-Settings, WindowsTerminal Settings/Profile etc.) muss ich daher in ein privates Repo packen.
 
+Zum Schluss noch ein Tipp: Man kann der Verknüpfung von PowerShell und den Profilen im WindowsTerminal "-NoProfile" mitgeben, dann wird der StartBlock nicht mit angezeigt. Ist bei mir immer so eingestellt, da ich das bei häufiger Verwendung schon was nervig finde.
+
 ## Pfade
 Verschiedene Instanzen von PowerShell haben verschiedene Profil-Pfade.
 
