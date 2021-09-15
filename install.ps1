@@ -81,6 +81,7 @@ if (!(Test-Path "$env:windir\Fonts\DelugiaComplete.ttf" -ErrorAction SilentlyCon
 
     Write-Verbose "Loading Font Archive ..." -Verbose
     Invoke-WebRequest -Uri "https://github.com/adam7/delugia-code/releases/latest/download/delugia-complete.zip" -O "$OutPath\delugia-complete.zip"
+    $null = New-Item -ItemType Directory -Path "$OutPath\delugia-complete\" -ErrorAction SilentlyContinue
     
     Add-Type -AssemblyName System.IO.Compression.FileSystem
     $zip = [System.IO.Compression.ZipFile]::OpenRead("$OutPath\delugia-complete.zip")
