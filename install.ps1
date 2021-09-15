@@ -98,8 +98,8 @@ if (!(Test-Path "$env:windir\Fonts\DelugiaComplete.ttf" -ErrorAction SilentlyCon
         $InstallFont.CopyHere("$FontFile", 0x10)
     }
 
-    Remove-Item "$env:TEMP\delugia-complete" -Recurse -Verbose
-    Remove-Item "$env:TEMP\delugia-complete.zip" -Verbose
+    #$null = Remove-Item "$env:TEMP\delugia-complete" -Recurse
+    #$null = Remove-Item "$env:TEMP\delugia-complete.zip"
 }
 
 
