@@ -133,7 +133,7 @@ if (!(Test-Path "$env:windir\Fonts\CascadiaCodePL.ttf" -ErrorAction SilentlyCont
     $zip.Dispose()
     #>
 
-    Get-ChildItem -Path "$env:TEMP\CascadiaCode\ttf" | ForEach-Object {
+    Get-ChildItem -Path "$env:TEMP\CascadiaCode\ttf" -Filter "*.ttf" | ForEach-Object {
         $FontFile = $_.FullName
         Write-Verbose "Installing font file '$_'" -Verbose
         $InstallFont.CopyHere("$FontFile", 0x10)
