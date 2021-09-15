@@ -26,6 +26,7 @@ $DoBackupPowerShellHistory = $true
 #endregion
 
 #region Syncable PS Profile
+# Ping check. Version check does not work otherwise.
 if ((New-Object System.Net.NetworkInformation.Ping).SendPingAsync('raw.githubusercontent.com').Result.Status -ne "Success") {
     Write-Host "GitHub not reachable." -BackgroundColor Black -ForegroundColor Red
 }

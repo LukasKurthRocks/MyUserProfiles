@@ -53,5 +53,5 @@ Hinweise:
 ## TODO
 Aktuelle Aufgaben
 - [ ] Delugia Complete einbinden. Keine TTF mehr, sondern ZIP Archiv.
-- [ ] Internet Check
+- [x] Internet Check
 - [ ] Verschiedene PS1 Profil Namen?

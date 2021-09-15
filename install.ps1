@@ -73,6 +73,31 @@ if (!(Test-Path "$env:windir\Fonts\Delugia.Nerd.Font.ttf" -ErrorAction SilentlyC
     }
 }
 
+# Extra check #02 (Delugia Nerd Fonts combined in "Delugia Complete")
+if (!(Test-Path "$env:windir\Fonts\DelugiaComplete.ttf" -ErrorAction SilentlyContinue)) {
+    $OutPath = $env:TEMP
+    $objShell = New-Object -ComObject Shell.Application
+    $InstallFont = $objShell.Namespace(0x14) # 0x14 = Fonts
+
+    Write-Verbose "Loading Font Archive ..." -Verbose
+    Invoke-WebRequest -Uri "https://github.com/adam7/delugia-code/releases/latest/download/delugia-complete.zip" -O "$OutPath\delugia-complete.zip"
+    
+    Add-Type -AssemblyName System.IO.Compression.FileSystem
+    $zip = [System.IO.Compression.ZipFile]::OpenRead($Path)
+    $zip.Entries | Where-Object { $_.FullName -like "*.ttf" } |
+    ForEach-Object { 
+        $FileName = $_.Name
+        [System.IO.Compression.ZipFileExtensions]::ExtractToFile($_, "$OutPath\delugia-complete\$FileName", $true)
+    }
+    $zip.Dispose()
+
+    Get-ChildItem -Recurse -Path "$OutPath\delugia-complete" | ForEach-Object {
+        Write-Verbose "Install $_" -Verbose
+    }
+    #$InstallFont.CopyHere("$env:TEMP\$FontFileName", 0x10)
+}
+
+
 if (!(Get-Command -Name "Set-Theme" -ErrorAction SilentlyContinue) -and !(Get-Command -Name "Set-PoshPrompt" -ErrorAction SilentlyContinue)) {
     if (!(Get-Module -Name "posh-git")) {
         Write-Verbose "Module 'posh-git' ..." -Verbose
