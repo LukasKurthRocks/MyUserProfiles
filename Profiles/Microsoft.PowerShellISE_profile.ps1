@@ -24,42 +24,48 @@ $VerboseProfile = $false
 #endregion
 
 #region Syncable PS Profile
-# NOTE: GitHub RAW has 'Cache-Control: max-age=300' setting. Means: Sync is 5 Minutes.
-$CurrentProfileFileName = Split-Path $profile -Leaf
-$GitHub_PSProfileFile = "https://raw.githubusercontent.com/LukasKurthRocks/MyUserProfiles/main/Profiles/$CurrentProfileFileName"
-$GitHub_PSVersionsFile = "https://raw.githubusercontent.com/LukasKurthRocks/MyUserProfiles/main/VersionCheck/versions.json"
-$PSProfileFileVersion = [Version](Invoke-RestMethod -Uri $GitHub_PSVersionsFile)."$CurrentProfileFileName"
-$VersionFileLocal = [System.IO.Path]::Combine("$HOME", '.latest_profile_versions')
-
-$PSLocalFileVersion = [Version]"0.0.0"
-if (Test-Path -Path "$VersionFileLocal" -ErrorAction SilentlyContinue) {
-    $PSLocalFileVersion = (Get-Content -Path "$VersionFileLocal" | ConvertFrom-Json)."$CurrentProfileFileName"
+# Ping check. Version check does not work otherwise.
+if ((New-Object System.Net.NetworkInformation.Ping).SendPingAsync('raw.githubusercontent.com').Result.Status -ne "Success") {
+    Write-Host "GitHub not reachable." -BackgroundColor Black -ForegroundColor Red
 }
+else {
+    # NOTE: GitHub RAW has 'Cache-Control: max-age=300' setting. Means: Sync is 5 Minutes.
+    $CurrentProfileFileName = Split-Path $profile -Leaf
+    $GitHub_PSProfileFile = "https://raw.githubusercontent.com/LukasKurthRocks/MyUserProfiles/main/Profiles/$CurrentProfileFileName"
+    $GitHub_PSVersionsFile = "https://raw.githubusercontent.com/LukasKurthRocks/MyUserProfiles/main/VersionCheck/versions.json"
+    $PSProfileFileVersion = [Version](Invoke-RestMethod -Uri $GitHub_PSVersionsFile)."$CurrentProfileFileName"
+    $VersionFileLocal = [System.IO.Path]::Combine("$HOME", '.latest_profile_versions')
 
-# Test Version - Mismatch
-if ($PSLocalFileVersion -ne $PSProfileFileVersion) {
-    Write-Verbose "Your version: $PSLocalFileVersion" -Verbose
-    Write-Verbose "New version: $PSProfileFileVersion" -Verbose
-    $choice = Read-Host -Prompt "Found newer profile, install? (Y)"
-    if ($choice.ToLower() -eq "y" -or $choice -eq "") {
-        try {
-            # Save content in profile file
-            $GitHub_FileContent = Invoke-RestMethod $GitHub_PSProfileFile -ErrorAction Stop
-            Set-Content -Path $profile -Value $GitHub_FileContent -Force
+    $PSLocalFileVersion = [Version]"0.0.0"
+    if (Test-Path -Path "$VersionFileLocal" -ErrorAction SilentlyContinue) {
+        $PSLocalFileVersion = (Get-Content -Path "$VersionFileLocal" | ConvertFrom-Json)."$CurrentProfileFileName"
+    }
+
+    # Test Version - Mismatch
+    if ($PSLocalFileVersion -ne $PSProfileFileVersion) {
+        Write-Verbose "Your version: $PSLocalFileVersion" -Verbose
+        Write-Verbose "New version: $PSProfileFileVersion" -Verbose
+        $choice = Read-Host -Prompt "Found newer profile, install? (Y)"
+        if ($choice.ToLower() -eq "y" -or $choice -eq "") {
+            try {
+                # Save content in profile file
+                $GitHub_FileContent = Invoke-RestMethod $GitHub_PSProfileFile -ErrorAction Stop
+                Set-Content -Path $profile -Value $GitHub_FileContent -Force
             
-            # Save version in file
-            $GitHub_VersionFileContent = Invoke-RestMethod -Uri $GitHub_PSVersionsFile -ErrorAction Stop
-            $VersionFileLocalContent = Get-Content -Path "$VersionFileLocal" -ErrorAction SilentlyContinue | ConvertFrom-Json
-            $VersionFileLocalContent | Add-Member -MemberType NoteProperty -Name "$CurrentProfileFileName" -Value ($GitHub_VersionFileContent."$CurrentProfileFileName") -Force
-            Set-Content -Path "$VersionFileLocal" -Value ( $VersionFileLocalContent | ConvertTo-Json ) # save versions to file
+                # Save version in file
+                $GitHub_VersionFileContent = Invoke-RestMethod -Uri $GitHub_PSVersionsFile -ErrorAction Stop
+                $VersionFileLocalContent = Get-Content -Path "$VersionFileLocal" -ErrorAction SilentlyContinue | ConvertFrom-Json
+                $VersionFileLocalContent | Add-Member -MemberType NoteProperty -Name "$CurrentProfileFileName" -Value ($GitHub_VersionFileContent."$CurrentProfileFileName") -Force
+                Set-Content -Path "$VersionFileLocal" -Value ( $VersionFileLocalContent | ConvertTo-Json ) # save versions to file
             
-            Write-Verbose "Installed newer version of profile" -Verbose
-            . $profile
-            return
-        }
-        catch {
-            # Git has rate limit issue, since using anonymous
-            Write-Verbose "Error accessing github, try again next time." -Verbose
+                Write-Verbose "Installed newer version of profile" -Verbose
+                . $profile
+                return
+            }
+            catch {
+                # Git has rate limit issue, since using anonymous
+                Write-Verbose "Error accessing github, try again next time." -Verbose
+            }
         }
     }
 }
