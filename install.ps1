@@ -110,7 +110,7 @@ if ($false) {
     # if ($CascadiaJSON.name -match '\d+(?:\.\d+)+') { $CascadiaVersion = $Matches[0] }
 
 # Extra check 03
-if (!(Test-Path "$env:windir\Fonts\CascadiaCode_.ttf" -ErrorAction SilentlyContinue)) {
+if (!(Test-Path "$env:windir\Fonts\CascadiaCodePL.ttf" -ErrorAction SilentlyContinue)) {
     $objShell = New-Object -ComObject Shell.Application
     $InstallFont = $objShell.Namespace(0x14) # 0x14 = Fonts
     
@@ -129,7 +129,7 @@ if (!(Test-Path "$env:windir\Fonts\CascadiaCode_.ttf" -ErrorAction SilentlyConti
     }
     $zip.Dispose()
 
-    Get-ChildItem -Recurse -Path "$env:TEMP\CascadiaCode" | ForEach-Object {
+    Get-ChildItem -Path "$env:TEMP\CascadiaCode\ttf" | ForEach-Object {
         $FontFile = $_.FullName
         Write-Verbose "Installing font file '$_'" -Verbose
         $InstallFont.CopyHere("$FontFile", 0x10)
