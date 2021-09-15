@@ -116,9 +116,7 @@ if (!(Test-Path "$env:windir\Fonts\CascadiaCode_.ttf" -ErrorAction SilentlyConti
     
     Write-Verbose "Loading Font Archive ..." -Verbose
     $CascadiaJSON = Invoke-WebRequest -Uri "https://api.github.com/repos/microsoft/cascadia-code/releases/latest" | ConvertFrom-Json
-    if ($CascadiaJSON.name -match '\d+(?:\.\d+)+') { $CascadiaVersion = $Matches[0] }
-    
-    Invoke-WebRequest -Uri "https://github.com/microsoft/cascadia-code/releases/latest/CascadiaCode-$CascadiaVersion.zip" -O "$env:TEMP\CascadiaCode.zip"
+    Invoke-WebRequest -Uri $CascadiaJSON.assets[0].browser_download_url -O "$env:TEMP\CascadiaCode.zip"
     $null = New-Item -ItemType Directory -Path "$env:TEMP\CascadiaCode\" -ErrorAction SilentlyContinue
 
     Write-Verbose "Extracting files from archive ..." -Verbose
