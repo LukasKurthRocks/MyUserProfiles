@@ -83,7 +83,7 @@ if (!(Test-Path "$env:windir\Fonts\DelugiaComplete.ttf" -ErrorAction SilentlyCon
     Invoke-WebRequest -Uri "https://github.com/adam7/delugia-code/releases/latest/download/delugia-complete.zip" -O "$OutPath\delugia-complete.zip"
     
     Add-Type -AssemblyName System.IO.Compression.FileSystem
-    $zip = [System.IO.Compression.ZipFile]::OpenRead($Path)
+    $zip = [System.IO.Compression.ZipFile]::OpenRead("$OutPath\delugia-complete.zip")
     $zip.Entries | Where-Object { $_.FullName -like "*.ttf" } |
     ForEach-Object { 
         $FileName = $_.Name
