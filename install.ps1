@@ -117,10 +117,13 @@ if (!(Test-Path "$env:windir\Fonts\CascadiaCodePL.ttf" -ErrorAction SilentlyCont
     Write-Verbose "Loading Font Archive ..." -Verbose
     $CascadiaJSON = Invoke-WebRequest -Uri "https://api.github.com/repos/microsoft/cascadia-code/releases/latest" | ConvertFrom-Json
     Invoke-WebRequest -Uri $CascadiaJSON.assets[0].browser_download_url -O "$env:TEMP\CascadiaCode.zip"
-    $null = New-Item -ItemType Directory -Path "$env:TEMP\CascadiaCode\" -ErrorAction SilentlyContinue
+    #$null = New-Item -ItemType Directory -Path "$env:TEMP\CascadiaCode\" -ErrorAction SilentlyContinue
 
     Write-Verbose "Extracting files from archive ..." -Verbose
     Add-Type -AssemblyName System.IO.Compression.FileSystem
+    [System.IO.Compression.ZipFile]::ExtractToDirectory("$env:TEMP\CascadiaCode.zip", "$env:TEMP\CascadiaCode")
+
+    <#
     $zip = [System.IO.Compression.ZipFile]::OpenRead("$env:TEMP\CascadiaCode.zip")
     $zip.Entries | Where-Object { $_.FullName -like "*.ttf" } |
     ForEach-Object { 
@@ -128,6 +131,7 @@ if (!(Test-Path "$env:windir\Fonts\CascadiaCodePL.ttf" -ErrorAction SilentlyCont
         [System.IO.Compression.ZipFileExtensions]::ExtractToFile($_, "$env:TEMP\CascadiaCode\$FileName", $true)
     }
     $zip.Dispose()
+    #>
 
     Get-ChildItem -Path "$env:TEMP\CascadiaCode\ttf" | ForEach-Object {
         $FontFile = $_.FullName
