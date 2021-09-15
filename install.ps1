@@ -74,32 +74,71 @@ if (!(Test-Path "$env:windir\Fonts\Delugia.Nerd.Font.ttf" -ErrorAction SilentlyC
 }
 
 # Extra check #02 (Delugia Nerd Fonts combined in "Delugia Complete")
-if (!(Test-Path "$env:windir\Fonts\DelugiaComplete.ttf" -ErrorAction SilentlyContinue)) {
+if ($false) {
+    if (!(Test-Path "$env:windir\Fonts\DelugiaComplete.ttf" -ErrorAction SilentlyContinue)) {
+        $objShell = New-Object -ComObject Shell.Application
+        $InstallFont = $objShell.Namespace(0x14) # 0x14 = Fonts
+
+        Write-Verbose "Loading Font Archive ..." -Verbose
+        Invoke-WebRequest -Uri "https://github.com/adam7/delugia-code/releases/latest/download/delugia-complete.zip" -O "$env:TEMP\delugia-complete.zip"
+        $null = New-Item -ItemType Directory -Path "$env:TEMP\delugia-complete\" -ErrorAction SilentlyContinue
+    
+        Write-Verbose "Extracting files from archive ..." -Verbose
+        Add-Type -AssemblyName System.IO.Compression.FileSystem
+        $zip = [System.IO.Compression.ZipFile]::OpenRead("$env:TEMP\delugia-complete.zip")
+        $zip.Entries | Where-Object { $_.FullName -like "*.ttf" } |
+        ForEach-Object { 
+            $FileName = $_.Name
+            [System.IO.Compression.ZipFileExtensions]::ExtractToFile($_, "$env:TEMP\delugia-complete\$FileName", $true)
+        }
+        $zip.Dispose()
+
+        Get-ChildItem -Recurse -Path "$env:TEMP\delugia-complete" | ForEach-Object {
+            $FontFile = $_.FullName
+            Write-Verbose "Installing font file '$_'" -Verbose
+            $InstallFont.CopyHere("$FontFile", 0x10)
+        }
+
+        $null = Remove-Item "$env:TEMP\delugia-complete" -Recurse
+        $null = Remove-Item "$env:TEMP\delugia-complete.zip"
+    }
+}
+
+    # https://github.com/microsoft/cascadia-code/releases/download/v2106.17/CascadiaCode-2106.17.zip
+    # latest -> CascadiaCode-<tag>.zip
+    # $CascadiaJSON = iwr https://api.github.com/repos/microsoft/cascadia-code/releases/latest | ConvertFrom-Json
+    # if ($CascadiaJSON.name -match '\d+(?:\.\d+)+') { $CascadiaVersion = $Matches[0] }
+
+# Extra check 03
+if (!(Test-Path "$env:windir\Fonts\CascadiaCode_.ttf" -ErrorAction SilentlyContinue)) {
     $objShell = New-Object -ComObject Shell.Application
     $InstallFont = $objShell.Namespace(0x14) # 0x14 = Fonts
-
-    Write-Verbose "Loading Font Archive ..." -Verbose
-    Invoke-WebRequest -Uri "https://github.com/adam7/delugia-code/releases/latest/download/delugia-complete.zip" -O "$env:TEMP\delugia-complete.zip"
-    $null = New-Item -ItemType Directory -Path "$env:TEMP\delugia-complete\" -ErrorAction SilentlyContinue
     
+    Write-Verbose "Loading Font Archive ..." -Verbose
+    $CascadiaJSON = Invoke-WebRequest -Uri "https://api.github.com/repos/microsoft/cascadia-code/releases/latest" | ConvertFrom-Json
+    if ($CascadiaJSON.name -match '\d+(?:\.\d+)+') { $CascadiaVersion = $Matches[0] }
+    
+    Invoke-WebRequest -Uri "https://github.com/microsoft/cascadia-code/releases/latest/CascadiaCode-$CascadiaVersion.zip" -O "$env:TEMP\CascadiaCode.zip"
+    $null = New-Item -ItemType Directory -Path "$env:TEMP\CascadiaCode\" -ErrorAction SilentlyContinue
+
     Write-Verbose "Extracting files from archive ..." -Verbose
     Add-Type -AssemblyName System.IO.Compression.FileSystem
-    $zip = [System.IO.Compression.ZipFile]::OpenRead("$env:TEMP\delugia-complete.zip")
+    $zip = [System.IO.Compression.ZipFile]::OpenRead("$env:TEMP\CascadiaCode.zip")
     $zip.Entries | Where-Object { $_.FullName -like "*.ttf" } |
     ForEach-Object { 
         $FileName = $_.Name
-        [System.IO.Compression.ZipFileExtensions]::ExtractToFile($_, "$env:TEMP\delugia-complete\$FileName", $true)
+        [System.IO.Compression.ZipFileExtensions]::ExtractToFile($_, "$env:TEMP\CascadiaCode\$FileName", $true)
     }
     $zip.Dispose()
 
-    Get-ChildItem -Recurse -Path "$env:TEMP\delugia-complete" | ForEach-Object {
+    Get-ChildItem -Recurse -Path "$env:TEMP\CascadiaCode" | ForEach-Object {
         $FontFile = $_.FullName
         Write-Verbose "Installing font file '$_'" -Verbose
         $InstallFont.CopyHere("$FontFile", 0x10)
     }
 
-    #$null = Remove-Item "$env:TEMP\delugia-complete" -Recurse
-    #$null = Remove-Item "$env:TEMP\delugia-complete.zip"
+    $null = Remove-Item "$env:TEMP\CascadiaCode" -Recurse
+    $null = Remove-Item "$env:TEMP\CascadiaCode.zip"
 }
 
 
