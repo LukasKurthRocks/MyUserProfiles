@@ -48,3 +48,10 @@ Hinweise:
 - https://devblogs.microsoft.com/powershell/optimizing-your-profile/
     - https://www.powershellgallery.com/packages/PSProfiler
         - Measure-Script
+
+
+## TODO
+Aktuelle Aufgaben
+- [ ] Delugia Complete einbinden. Keine TTF mehr, sondern ZIP Archiv.
+- [ ] Internet Check
+- [ ] Verschiedene PS1 Profil Namen?
