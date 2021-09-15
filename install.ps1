@@ -75,27 +75,31 @@ if (!(Test-Path "$env:windir\Fonts\Delugia.Nerd.Font.ttf" -ErrorAction SilentlyC
 
 # Extra check #02 (Delugia Nerd Fonts combined in "Delugia Complete")
 if (!(Test-Path "$env:windir\Fonts\DelugiaComplete.ttf" -ErrorAction SilentlyContinue)) {
-    $OutPath = $env:TEMP
     $objShell = New-Object -ComObject Shell.Application
     $InstallFont = $objShell.Namespace(0x14) # 0x14 = Fonts
 
     Write-Verbose "Loading Font Archive ..." -Verbose
-    Invoke-WebRequest -Uri "https://github.com/adam7/delugia-code/releases/latest/download/delugia-complete.zip" -O "$OutPath\delugia-complete.zip"
-    $null = New-Item -ItemType Directory -Path "$OutPath\delugia-complete\" -ErrorAction SilentlyContinue
+    Invoke-WebRequest -Uri "https://github.com/adam7/delugia-code/releases/latest/download/delugia-complete.zip" -O "$env:TEMP\delugia-complete.zip"
+    $null = New-Item -ItemType Directory -Path "$env:TEMP\delugia-complete\" -ErrorAction SilentlyContinue
     
+    Write-Verbose "Extracting files from archive ..." -Verbose
     Add-Type -AssemblyName System.IO.Compression.FileSystem
-    $zip = [System.IO.Compression.ZipFile]::OpenRead("$OutPath\delugia-complete.zip")
+    $zip = [System.IO.Compression.ZipFile]::OpenRead("$env:TEMP\delugia-complete.zip")
     $zip.Entries | Where-Object { $_.FullName -like "*.ttf" } |
     ForEach-Object { 
         $FileName = $_.Name
-        [System.IO.Compression.ZipFileExtensions]::ExtractToFile($_, "$OutPath\delugia-complete\$FileName", $true)
+        [System.IO.Compression.ZipFileExtensions]::ExtractToFile($_, "$env:TEMP\delugia-complete\$FileName", $true)
     }
     $zip.Dispose()
 
-    Get-ChildItem -Recurse -Path "$OutPath\delugia-complete" | ForEach-Object {
-        Write-Verbose "Install $_" -Verbose
+    Get-ChildItem -Recurse -Path "$env:TEMP\delugia-complete" | ForEach-Object {
+        $FontFile = $_.FullName
+        Write-Verbose "Installing font file '$_'" -Verbose
+        $InstallFont.CopyHere("$FontFile", 0x10)
     }
-    #$InstallFont.CopyHere("$env:TEMP\$FontFileName", 0x10)
+
+    Remove-Item "$env:TEMP\delugia-complete" -Recurse -Verbose
+    Remove-Item "$env:TEMP\delugia-complete.zip" -Verbose
 }
 
 
