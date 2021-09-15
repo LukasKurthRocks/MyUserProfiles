@@ -52,6 +52,4 @@ Hinweise:
 
 ## TODO
 Aktuelle Aufgaben
-- [ ] Delugia Complete einbinden. Keine TTF mehr, sondern ZIP Archiv.
-- [x] Internet Check
-- [ ] Verschiedene PS1 Profil Namen?
+- [ ] Verschiedene PS1 Profil Namen? Da gab es mal ein Problem, schau ich später.
